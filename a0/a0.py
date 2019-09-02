@@ -58,13 +58,14 @@ def find_path_bfs(start, goal):
             # if s.is_valid:# and not s in states_visited:# and not s in state_q:
             # # new state must be valid, and correspond to new vertex or new edge
             print(s.is_valid)
-            if s.is_valid and g.add_edge([current_state, s]):
+            print(len(g.edges))
+            if g.add_edge([current_state, s]):
                 state_q.append(s)
                 # states_visited.append(s)
         print(len(state_q))
         current_state = state_q[0]
-        # print(len(g.vertices))
         state_q.pop(0)
+        # print(len(g.vertices))
         print('\ncurrent state:')
         print(current_state)
 
