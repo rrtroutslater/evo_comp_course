@@ -1,92 +1,71 @@
-from __future__ import print_function
-import numpy as np 
-from State import *
+from State_2 import * 
+from Graph import Graph
 
-""" 
-cannibals, missionaries
-
-state:
-
-"""
-
-class Graph(object):
-    def __init__(self):
-        self.vertices = []
-        self.edges = []
-
-    def add_vertex(self, new_v):
-        if len(self.vertices) == 0:
-            self.vertices.append(new_v)
-            return True
-        i = 0
-        while i < len(self.vertices):
-            if self.vertices[i] == new_v:
-                return False
-            i += 1
-        self.vertices.append(new_v)
-        return True
-
-    def add_edge(self, new_e):
-        if new_e not in self.edges:# and new_e.reverse() not in self.edges:
-            self.edges.append(new_e)
-            # self.edges.append(new_e.reverse())
-            return True
-        return False
-
-
-def build_graph(start):
-    return
-
-
-def find_path_bfs(start, goal):
-    """
-    find a path from start to goal (if there is one) using breadth first search
-    """
-    state_q = []
-    states_visited = []
+def build_graph_start_finish(start, goal, shortest_path=[]):
+    # print('start state:\n', start)
     g = Graph()
+    state_q = []
     g.add_vertex(start)
-    # g.add_vertex(goal)
-    # append new states to end
-    # start search at position 0, 
+    state_q.append([start,[]])
 
     current_state = start 
     while current_state != goal:
-        next_states = current_state.get_possible_next_states()
-        print(next_states)
-        for s in next_states:
-            # if s.is_valid:# and not s in states_visited:# and not s in state_q:
-            # # new state must be valid, and correspond to new vertex or new edge
-            print(s.is_valid)
-            print(len(g.edges))
-            if g.add_edge([current_state, s]):
-                state_q.append(s)
-                # states_visited.append(s)
-        print(len(state_q))
-        current_state = state_q[0]
+        valid_acts = current_state.get_valid_acts()
+        # print('current state:')
+        # print(current_state)
+        # print('valid acts:\t', valid_acts)
+        if len(valid_acts) > 0:
+            next_possible_states = current_state.apply_acts(valid_acts)
+            for s in next_possible_states:
+                # print('considering state:\n', s)
+                if g.add_edge([current_state, s]):
+                    # print('added edge between above and current')
+                    state_q.append([s, current_state])
+                # else:
+                    # print('above and current represents duplicate edge.. NOT ADDED')
+                # input("Press Enter to continue...")
+        # print(len(g.edges))
+        current_state = state_q[0][0]
+        previous_state = state_q[0][1]
         state_q.pop(0)
-        # print(len(g.vertices))
-        print('\ncurrent state:')
-        print(current_state)
+        if current_state == goal:
+            shortest_path.append(goal)
+            print('goal state reached:\n', current_state)
 
-    return 
+    if start == goal:
+        shortest_path.append(start)
+        return shortest_path
+    else:
+        return build_graph_start_finish(start, previous_state, shortest_path)
+    # return shortest_path
+
+"""
+append [s, previous_s] to state q
+when goal state is reached:
+shortest_path.append(goal=state_q[0][0])
+shortest_path.append(previous = state_q[0][1])
+
+then call build_graph_start_finish(start, previous_state)
+until start == goal 
+
+reverse shortest_path
+print shortest_path
+"""
 
 
 def main():
-    s = State()
-    goal_state = State(
-        boat_bank='r', num_l=np.array([0,0]), num_r=np.array([3,3]), boat_capacity=1
-        )
+    start = State()
+    goal = State(boat_bank='r', num_l=np.array([0,0]), num_r=np.array([3,3]))
+    sp = build_graph_start_finish(start, goal)
+    print(sp)
+    for s in sp:
+        print(s)
 
-    print(s)
-    print(goal_state)
-
-    print("-------------------------------------------------")
-    find_path_bfs(s, goal_state)
-
-    return
+    # for i in range(0, len(sp.reverse())):
+    #     print(sp[i])
 
 
 if __name__ == "__main__":
     main()
+    pass
 
