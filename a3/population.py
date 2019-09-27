@@ -1,6 +1,5 @@
 import numpy as np 
-
-# population class
+import random
 
 class Population(object):
     def __init__(self,
@@ -12,7 +11,13 @@ class Population(object):
 
         self.pop_size = pop_size
         self.bits = bits 
+        self.mutation_prob = mutation_prob
+        self.crossover_prob = crossover_prob
+        
         self.p = np.random.choice([0,1], size=(self.pop_size, self.bits))
+        self.threshold = np.ones_like(self.p) * self.mutation_prob
+        print('created a population with shape:\t', self.p.shape)
+        return
 
     def fitness_proportional_selection(self,
             fitness,
@@ -24,19 +29,32 @@ class Population(object):
         """
         prob_dist = fitness / np.sum(fitness)
         self.p = np.random.choice(self.p, size=self.p.shape, p=prob_dist)
+        return
 
-    def crossover(self,
-            ):
-        
-
+    def single_crossover(self,):
+        """
+        """
+        new_pop = np.zeros_like(self.p)
+        idx = 0
+        for individual in self.p:
+            if random.random() < self.crossover_prob:
+                partner = np.random.choice(self.p)
+                crossover_idx = np.random.randint(0, self.bits)
+                new_pop[idx][:crossover_idx] = individual[:crossover_idx]
+                new_pop[idx][crossover_idx:] = partner[crossover_idx:]
+            else:
+                new_pop[idx] = individual
+            idx += 1
+        self.p = new_pop
         return
 
     def mutate(self,):
-
-        for i in range(0, self.p.shape[0]):
-            for j in range(0, self.p.shape[1]):
-
-
-
-
+        """
+        """
+        flip_idx = np.argwhere(np.random.random(size=self.p.shape) < self.threshold)
+        for i in flip_idx:
+            self.p[i[0]][i[1]] -= 1
+        zero_idx = np.argwhere(self.p < 0)
+        for i in zero_idx:
+            self.p[i[0]][i[1]] += 1
         return

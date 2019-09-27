@@ -2,6 +2,7 @@ from __future__ import print_function
 import numpy as np 
 from dejong_functions import *
 from util import *
+from population import *
 
 
 # genetic algorithm class
@@ -26,6 +27,9 @@ def main():
     n_bits = 15
     x = np.zeros(shape=(10, 3, n_bits))
     dejong_1(x)
+
+    p = Population(10, 3*n_bits)
+    p.mutate()
 
     return
 
