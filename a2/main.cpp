@@ -11,7 +11,6 @@ const static int NUM_AGENT = 100;
 // expects pointer to integer array of length 100, where each element is either 0 or 1
 double eval(int *pj);
 
-
 void make_random_vec(int v[150], int size) {
   // random number generation
   random_device rd;
@@ -164,7 +163,7 @@ void ga_basic(){
     make_random_vec(vecs[i], 150);
   }
 
-  int max_gen = 10000;
+  int max_gen = 2000;
   int t = 0;
   while( t < max_gen ){
     // get fitness of current generation
@@ -183,6 +182,7 @@ void ga_basic(){
       }
       if( new_fit[i] == 64 ){
         cout << "FOUND MAX" << endl;
+        cout << "total generations: " << t << endl;
         for(int j = 0; j < vec_size; j++ ){
           cout << vecs[i][j] << ", ";
         }
@@ -215,7 +215,6 @@ void ga_basic(){
   }
 }
 
-
 int main() {
   // 1
   // random_hill_climb();
@@ -224,64 +223,3 @@ int main() {
   ga_basic();
   return 0;
 }
-
-// void flip_bit(int * guess, int idx) {
-//   // flips a single specified bit
-//   if(guess[idx] == 1) {
-//     guess[idx] = 0;
-//   } else {
-//     guess[idx] = 1;
-//   }
-//   return;
-// }
-
-
-// void random_hill_climb(){
-//   /*
-//   simple random hill climber, flips one bit per iteration
-//   */
-
-//   // random number generation
-//   random_device rd;
-//   mt19937 rng(rd());
-//   uniform_int_distribution<int> uni_dist(0, 99);
-//   int idx = 0; 
-  
-//   // initialize vector to all 0
-//   int vec[150];
-//   for(int i = 0; i < 150; i++){
-//     vec[i] = 0;
-//   }
-//   // double fitness = eval(vec);
-//   double fitness = 0;
-//   double new_fitness = 0;
-
-//   int ctr = 0;
-//   while(fitness != 250) {
-//     // get a new random index
-//     idx = uni_dist(rng);
-//     // modify bitstring 
-//     flip_bit(vec, idx);
-//     new_fitness = eval(vec);
-
-//     // if new vector is worse, change it back
-//     if(new_fitness < fitness) {
-//       flip_bit(vec, idx);
-//     } else {
-//       fitness = new_fitness;
-//     }
-//     cout << "fitness = " << fitness << endl;
-//     ctr ++;
-//     cout << "counter = " << ctr << endl;
-//   }
-
-//   // print resulting array
-//   int sum = 0;
-//   for(int i = 0; i < 100; i++) {
-//     cout << vec[i] << ", ";
-//     sum += vec[i];
-//   }
-//   cout << endl;
-//   cout << sum << endl;
-//   return;
-// }

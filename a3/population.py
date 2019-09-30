@@ -28,7 +28,13 @@ class Population(object):
         applies fitness proportional selection to population contained in class instance
         """
         prob_dist = fitness / np.sum(fitness)
-        self.p = np.random.choice(self.p, size=self.p.shape, p=prob_dist)
+        idx = np.random.choice(np.array(range(prob_dist.shape[0])), size=self.p.shape[0], p=prob_dist)
+        # print(idx)
+        # print('idx shape:', idx.shape)
+        # print(self.p.shape)
+        self.p[:] = self.p[idx]
+        # print(self.p)
+        # self.p = np.random.choice(self.p, size=self.p.shape, p=prob_dist)
         return
 
     def single_crossover(self,):
@@ -38,7 +44,9 @@ class Population(object):
         idx = 0
         for individual in self.p:
             if random.random() < self.crossover_prob:
-                partner = np.random.choice(self.p)
+                partner_idx = np.random.choice(range(self.p.shape[0]))
+                partner = self.p[partner_idx]
+                # partner = np.random.choice(self.p)
                 crossover_idx = np.random.randint(0, self.bits)
                 new_pop[idx][:crossover_idx] = individual[:crossover_idx]
                 new_pop[idx][crossover_idx:] = partner[crossover_idx:]
