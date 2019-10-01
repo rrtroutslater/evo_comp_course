@@ -21,7 +21,14 @@ class DejongFitnessFunction(object):
         self.fitness_functions = {
             1 : dejong_1,
             2 : dejong_2,
+            3 : dejong_3,
             # TODO - the rest of the dejong functions 
+        }
+
+        self.input_bounds = {
+            1 : [-5.12, 5.12],
+            2 : [-2.048, 2.048],
+            3 : [-5.12, 5.12],
         }
 
         self.pop_shape = self.expected_bitshapes[self.id]
@@ -43,7 +50,9 @@ class DejongFitnessFunction(object):
         pop = population.p.reshape(
             population.p.shape[0], self.pop_shape[0], self.pop_shape[1]
             )
-        return self.fitness_function(pop)
+
+        fitness, max_fitness = self.fitness_function(pop)
+        return fitness, max_fitness
 
 def dejong_1(x):
     """ 
@@ -60,12 +69,13 @@ def dejong_1(x):
 
     x_d = bin_arr_to_dec_arr(x, -5.12, 5.12)
     fitness = max_fitness - np.sum(np.multiply(x_d[:], x_d[:]), axis=1)
+
     # best_idx = np.argmax(fitness)
     # print('best fitness:\t', fitness[best_idx])
     # print(x[best_idx])
     # print(bin_to_dec(x[best_idx], -5.12, 5.12))
     # print(bin_to_dec(x[best_idx], -5.12, 5.12) > max_fitness)
-    return fitness
+    return fitness, max_fitness
 
 def dejong_2(x):
     """
@@ -85,17 +95,30 @@ def dejong_2(x):
     for num_arr in x_d:
         fitness[i] = 100 * (num_arr[0]**2 - num_arr[1])**2 + (1 - num_arr[0])**2
         i += 1
+
+    # fitness = max_fitness - fitness
     # best_idx = np.argmax(fitness)
     # print('best fitness:\t', fitness[best_idx])
     # print(x[best_idx])
     # print(bin_to_dec(x[best_idx], -2.048, 2.048))
     # print(bin_to_dec(x[best_idx], -2.048, 2.048) > max_fitness)
-    return fitness
+    return fitness, max_fitness
 
 def dejong_3(x):
     """
     """
-    return
+    assert len(x.shape) == 3
+    assert x.shape[1] == 5
+
+    max_fitness = 25 
+
+    x_d = bin_arr_to_dec_arr(x, -5.12, 5.12)
+    fitness = np.zeros(shape=(x.shape[0],))
+    i = 0
+    for num_arr in x_d:
+        fitness[i] = np.sum(num_arr.astype(np.int))
+    fitness = max_fitness - fitness
+    return fitness, max_fitness
 
 def bin_arr_to_dec_arr(x, n_min, n_max):
     x_d = np.zeros(shape=(x.shape[0], x.shape[1]))
