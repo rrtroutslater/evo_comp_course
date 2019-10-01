@@ -2,7 +2,7 @@ from __future__ import print_function
 import numpy as np 
 from dejong_functions import *
 from population import *
-from util import *
+# from util import *
 
 class GeneticAlg(object):
     def __init__(self,
@@ -63,3 +63,15 @@ class GeneticAlg(object):
         min_fit = np.min(fitnesses)
         avg_fit = np.average(fitnesses)
         return avg_fit, min_fit, max_fit
+
+
+
+
+
+
+
+
+
+
+
+

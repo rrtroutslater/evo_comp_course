@@ -2,7 +2,7 @@ from __future__ import print_function
 import numpy as np 
 import matplotlib.pyplot as plt 
 from dejong_functions import *
-from util import *
+# from util import *
 from population import *
 from ga import *
 
@@ -31,8 +31,8 @@ problem kind of solved!
 """
 
 def main():
-    # dejong 1
-    n_bits = 15
+    
+    n_bits = 10
     n_max_iter = 100
     pop_size = 50
     n_runs = 30
@@ -44,7 +44,8 @@ def main():
     max_arr = np.zeros(shape=(n_max_iter,))
 
     for i in range(0, n_runs):
-        ga = GeneticAlg(pop_size, 1, 
+        # ga = GeneticAlg(pop_size, 1, # de jong 1
+        ga = GeneticAlg(pop_size, 2, # de jong 2
             mutation_prob=mutation_prob,
             crossover_prob=crossover_prob,
             n_bits=n_bits
@@ -54,17 +55,23 @@ def main():
         min_arr += y
         max_arr += z
 
-    plt.plot(avg_arr/n_runs)
-    plt.plot(min_arr/n_runs)
-    plt.plot(max_arr/n_runs)
+    # de jong 1
+    # max_fit = np.ones_like(avg_arr) * 3 * (5.12**2)
+    # de jong 2
+    x1_max = -2.048
+    x2_max = -2.048
+    max_fit = np.ones_like(avg_arr) * 100 * (x1_max**2 - x2_max)**2 + (1 - x1_max)**2
+    print(max_fit)
+
+    plt.plot(max_fit, label='limit', linestyle='--')
+    plt.plot(avg_arr/n_runs, label='avg')
+    plt.plot(min_arr/n_runs, label='min')
+    plt.plot(max_arr/n_runs, label='max')
+    plt.legend(loc='lower right')
+    plt.title(s="pX = " + str(crossover_prob) + ", pM = " + str(mutation_prob))
+    # plt.ylim((0,100))   # 1
+    plt.ylim((0,4200))  # 2
     plt.show()
-
-    # x = np.zeros(shape=(10, 3, n_bits))
-    # dejong_1(x)
-
-    # p = Population(10, 3*n_bits)
-    # p.mutate()
-
     return
 
 

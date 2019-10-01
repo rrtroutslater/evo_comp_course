@@ -29,12 +29,7 @@ class Population(object):
         """
         prob_dist = fitness / np.sum(fitness)
         idx = np.random.choice(np.array(range(prob_dist.shape[0])), size=self.p.shape[0], p=prob_dist)
-        # print(idx)
-        # print('idx shape:', idx.shape)
-        # print(self.p.shape)
         self.p[:] = self.p[idx]
-        # print(self.p)
-        # self.p = np.random.choice(self.p, size=self.p.shape, p=prob_dist)
         return
 
     def single_crossover(self,):
