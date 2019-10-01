@@ -40,19 +40,19 @@ def main():
     crossover_prob = 0.7
 
     # de jong 1
-    ga = GeneticAlg(
-        pop_size, 
-        1,
-        mutation_prob=mutation_prob,
-        crossover_prob=crossover_prob,
-        n_bits=10
-    )
-    ga.run_ga(
-        num_generation=n_max_iter,
-        num_run=n_runs,
-        verbose=True,
-        plot_results=True
-    )
+    # ga = GeneticAlg(
+    #     pop_size, 
+    #     1,
+    #     mutation_prob=mutation_prob,
+    #     crossover_prob=crossover_prob,
+    #     n_bits=10
+    # )
+    # ga.run_ga(
+    #     num_generation=n_max_iter,
+    #     num_run=n_runs,
+    #     verbose=True,
+    #     plot_results=True
+    # )
 
     # de jong 2
     # ga = GeneticAlg(
