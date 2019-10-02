@@ -16,7 +16,6 @@ class Population(object):
         
         self.p = np.random.choice([0,1], size=(self.pop_size, self.bits))
         self.threshold = np.ones_like(self.p) * self.mutation_prob
-        print('created a population with shape:\t', self.p.shape)
         return
 
     def fitness_proportional_selection(self,

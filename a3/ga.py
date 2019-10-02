@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from dejong_functions import *
 from population import *
-# from util import *
 
 class GeneticAlg(object):
     def __init__(self,
@@ -50,23 +49,33 @@ class GeneticAlg(object):
         min_arr = np.zeros(shape=(num_generation,))
         max_arr = np.zeros(shape=(num_generation,))
 
+        best_idx = 0
+        best_fit = 0
+        best_individual = np.zeros_like(self.population.p[0])
         for i in range(0, num_run):
-            x, y, z, max_fitness = self.run_ga_optimization(num_generation)
+            self.initialize_population()
+            x, y, z, max_fitness, best_fit_new, best_individual_new = self.run_ga_optimization(num_generation)
+            # print('\nBEST AFTER FUNCTION RETURN\n', best_individual_new)
+            if best_fit_new > best_fit:
+                best_fit = best_fit_new 
+                best_individual = best_individual_new
             avg_arr += x 
             min_arr += y 
             max_arr += z
-            self.initialize_population()
 
         if verbose:
-            print(np.argmax(z))
             print('example best population member:\n', \
-                np.reshape(self.population.p[np.argmax(z)], \
-                (self.function.pop_shape[0], self.function.pop_shape[1]))
+                np.reshape(best_individual, self.function.pop_shape), 
             )
-            print('in decimal:\n', )
-            print('corresponding fitness:\t\t\t', np.max(z))
+            print('in decimal:\n', bin_arr_to_dec_arr(
+                np.expand_dims(np.reshape(best_individual, self.function.pop_shape), axis=0), 
+                self.function.bounds)
+                )
+            print('corresponding fitness:\t\t\t', best_fit)
+            print('avg max fitness at end:\t\t\t', max_arr[z.shape[0]-1]/num_run)
+            print('avg fitness at end:\t\t\t', avg_arr[x.shape[0]-1]/num_run)
             print('max possible fitness (theoretical):\t', max_fitness) 
-        
+
         if plot_results:
             plt.plot(np.ones_like(avg_arr) * max_fitness, label='limit', linestyle='--')
             plt.plot(avg_arr/num_run, label='avg')
@@ -74,7 +83,7 @@ class GeneticAlg(object):
             plt.plot(max_arr/num_run, label='max')
             plt.legend(loc='lower right')
             plt.title(s="pX = " + str(self.crossover_prob) + ", pM = " + str(self.mutation_prob))
-            plt.ylim((0,max_fitness * 1.1))
+            plt.ylim((min([0,np.min(min_arr)]),max_fitness * 1.1))
             plt.show()
         return avg_arr, min_arr, max_arr, max_fitness
 
@@ -86,13 +95,23 @@ class GeneticAlg(object):
         min_arr = np.zeros(shape=(num_generation,))
         max_arr = np.zeros(shape=(num_generation,))
 
+        best_idx = 0
+        best_fit = 0
+        best_individual = np.zeros_like(self.population.p[0])
+
         for i in range(0, num_generation):
             # evaluate fitness for current population
             fitnesses, max_fitness = self.function.evaluate_fitness(self.population)
 
+            # get the best individual
+            if np.max(fitnesses) > best_fit:
+                best_fit = np.max(fitnesses)
+                best_individual[:] = self.population.p[np.argmax(fitnesses)][:]
+
             # run the GA steps
             # fitness proportional selection
             self.population.fitness_proportional_selection(fitnesses)
+
             # mutation 
             self.population.mutate()
             # crossover
@@ -100,13 +119,13 @@ class GeneticAlg(object):
 
             # log the statistics 
             avg_arr[i], min_arr[i], max_arr[i] = self.calc_fitness_stats(fitnesses)
-        return avg_arr, min_arr, max_arr, max_fitness
+
+        return avg_arr, min_arr, max_arr, max_fitness, best_fit, best_individual
 
     def calc_fitness_stats(
             self, 
             fitnesses
         ):
-        # TODO: calculate min, max, average fitness for current population state
         max_fit = np.max(fitnesses)
         min_fit = np.min(fitnesses)
         avg_fit = np.average(fitnesses)
