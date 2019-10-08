@@ -10,12 +10,13 @@ def parse_tsp(fname):
 
     tsp_dict = {}
     for line in f:
-        print(line)
         l = line.split()
-        print(l)
-        if l[0] in int_str_list:
-            tsp_dict[l[0]] = np.array([float(l[1]), float(l[2])])
+        # print(l)
+        try:
+            if l[0][0] in int_str_list:
+                tsp_dict[int(l[0])] = np.array([float(l[1]), float(l[2])])
+        except:
+            continue
     return tsp_dict
-
 
 

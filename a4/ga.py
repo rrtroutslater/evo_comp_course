@@ -130,3 +130,6 @@ class GeneticAlg(object):
         min_fit = np.min(fitnesses)
         avg_fit = np.average(fitnesses)
         return avg_fit, min_fit, max_fit
+
+
+
