@@ -6,24 +6,15 @@ from util import *
 
 def main():
     data_dir = './tsps/data/'
-    pop_size = 40
+    pop_size = 50
 
     for fn in os.listdir(data_dir):
         tsp_dict = parse_tsp(data_dir + fn)
         p = PopulationTSP(pop_size, tsp_dict)
-        # # print(p.p_idx)
-        # f = p.calc_pop_fitness()
-        # # print(f)
-        # p.elite_selection(f)
-        # p.crossover_pmx()
-        # # print(p.p_idx)
-
-        # p.swap_mutation()
-
         ga = gaTSP(p)
-        ga.run_ga()
+        ga.run_ga(fn, num_generation=100, num_run=30)
 
-        return
+        # return
 
     return
 

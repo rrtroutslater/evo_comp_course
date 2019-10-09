@@ -20,7 +20,8 @@ class gaTSP():
 
     def run_ga(
             self,
-            num_generation=100,
+            problem_name,
+            num_generation=50,
             num_run=30,
             verbose=True,
             plot_results=True,
@@ -41,9 +42,10 @@ class gaTSP():
         best_fit = 0
         best_individual = np.zeros_like(self.p.p_idx[0])
         for i in range(0, num_run):
+            print(i)
             self.p = PopulationTSP(self.p.p_idx.shape[0], self.p.tsp_dict)
             x, y, z, max_fitness, best_fit_new, best_individual_new = self.run_ga_optimization(num_generation)
-            # print('\nBEST AFTER FUNCTION RETURN\n', best_individual_new)
+            print('\nBEST AFTER FUNCTION RETURN\n', best_individual_new)
             if best_fit_new > best_fit:
                 best_fit = best_fit_new 
                 best_individual = best_individual_new
@@ -51,18 +53,8 @@ class gaTSP():
             min_arr += y 
             max_arr += z
 
-        # if verbose:
-            # print('example best population member:\n', \
-            #     np.reshape(best_individual, self.function.pop_shape), 
-            # )
-            # print('in decimal:\n', bin_arr_to_dec_arr(
-            #     np.expand_dims(np.reshape(best_individual, self.function.pop_shape), axis=0), 
-            #     self.function.bounds)
-            #     )
-            # print('corresponding fitness:\t\t\t', best_fit)
-            # print('avg max fitness at end:\t\t\t', max_arr[z.shape[0]-1]/num_run)
-            # print('avg fitness at end:\t\t\t', avg_arr[x.shape[0]-1]/num_run)
-            # print('max possible fitness (theoretical):\t', max_fitness) 
+        if 1:
+            print(self.p.calc_distance(best_individual))
 
         if plot_results:
             plt.plot(np.ones_like(avg_arr) * max_fitness, label='limit', linestyle='--')
@@ -70,7 +62,8 @@ class gaTSP():
             plt.plot(min_arr/num_run, label='min')
             plt.plot(max_arr/num_run, label='max')
             plt.legend(loc='lower right')
-            plt.title(s="pX = " + str(self.crossover_prob) + ", pM = " + str(self.mutation_prob))
+            # plt.title(s="pX = " + str(self.crossover_prob) + ", pM = " + str(self.mutation_prob))
+            plt.title(s=problem_name)
             plt.ylim((min([0,np.min(min_arr)]),max_fitness * 1.1))
             plt.show()
         return avg_arr, min_arr, max_arr, max_fitness
@@ -89,7 +82,6 @@ class gaTSP():
 
         for i in range(0, num_generation):
             # evaluate fitness for current population
-            
             fitness = self.p.calc_pop_fitness()
             avg_arr[i], min_arr[i], max_arr[i] = self.calc_fitness_stats(fitness)
 
